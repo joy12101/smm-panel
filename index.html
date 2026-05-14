@@ -62,12 +62,7 @@
   <div class="box">
     <h1>🚀 My SMM Panel</h1>
 
-    <select id="service">
-      <option>Instagram Followers</option>
-      <option>Facebook Followers</option>
-      <option>TikTok Likes</option>
-      <option>YouTube Views</option>
-    </select>
+    <select id="service"></select>
 
     <input type="text" id="link" placeholder="Enter Link">
 
@@ -79,6 +74,30 @@
   </div>
 
   <script>
+    async function loadServices(){
+
+  const response = await fetch('/api/services');
+
+  const data = await response.json();
+
+  const select = document.getElementById("service");
+
+  data.slice(0,100).forEach(service=>{
+
+    let option = document.createElement("option");
+
+    option.value = service.service;
+
+    option.text =
+    service.name + " - $" + service.rate;
+
+    select.appendChild(option);
+
+  });
+
+}
+
+loadServices();
     async function orderNow(){
 
       let service = document.getElementById("service").value;
