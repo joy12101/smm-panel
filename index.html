@@ -1,43 +1,142 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>My SMM Panel</title>
-  <style>
-    body{
-      background:#111;
-      color:white;
-      font-family:Arial;
-      text-align:center;
-      padding-top:100px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My SMM Panel</title>
 
-    .box{
-      background:#1e1e1e;
-      width:300px;
-      margin:auto;
-      padding:30px;
-      border-radius:20px;
-    }
+<style>
 
-    button{
-      background:#00ff99;
-      border:none;
-      padding:12px 20px;
-      border-radius:10px;
-      font-weight:bold;
-      cursor:pointer;
-    }
-  </style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:#0f0f0f;
+    color:white;
+}
+
+header{
+    background:#111;
+    padding:20px;
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+    box-shadow:0 0 10px rgba(0,0,0,0.5);
+}
+
+.container{
+    padding:20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:#1b1b1b;
+    padding:20px;
+    border-radius:20px;
+    transition:0.3s;
+    border:1px solid #2c2c2c;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.service{
+    font-size:18px;
+    margin-bottom:10px;
+    color:#00ff99;
+}
+
+.price{
+    margin-bottom:10px;
+}
+
+button{
+    background:#00ff99;
+    border:none;
+    padding:12px 20px;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+    width:100%;
+}
+
+.loading{
+    text-align:center;
+    margin-top:50px;
+    font-size:20px;
+}
+
+</style>
 </head>
 
 <body>
 
-<div class="box">
-  <h1>My SMM Panel</h1>
-  <p>Powered by SMMGen API</p>
+<header>
+    My SMM Panel
+</header>
 
-  <button>Order Now</button>
+<div class="container">
+
+<div class="loading" id="loading">
+Loading Services...
 </div>
+
+<div class="grid" id="services"></div>
+
+</div>
+
+<script>
+
+async function loadServices(){
+
+    const response = await fetch('/api/services');
+
+    const data = await response.json();
+
+    document.getElementById('loading').style.display = 'none';
+
+    const servicesDiv = document.getElementById('services');
+
+    data.slice(0,50).forEach(service=>{
+
+        const price = (parseFloat(service.rate) * 2).toFixed(3);
+
+        servicesDiv.innerHTML += `
+        
+        <div class="card">
+
+            <div class="service">
+                ${service.name}
+            </div>
+
+            <div class="price">
+                Price: $${price}
+            </div>
+
+            <div class="price">
+                Min: ${service.min}
+            </div>
+
+            <button>
+                Order Now
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+loadServices();
+
+</script>
 
 </body>
 </html>
