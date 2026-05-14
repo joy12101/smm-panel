@@ -1,142 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My SMM Panel</title>
+  <title>My SMM Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
+  <style>
+    body{
+      background:#0f0f0f;
+      color:white;
+      font-family:Arial;
+      text-align:center;
+      padding:30px;
+    }
 
-body{
-    margin:0;
-    font-family:Arial;
-    background:#0f0f0f;
-    color:white;
-}
+    h1{
+      color:#00ff99;
+    }
 
-header{
-    background:#111;
-    padding:20px;
-    text-align:center;
-    font-size:28px;
-    font-weight:bold;
-    box-shadow:0 0 10px rgba(0,0,0,0.5);
-}
+    .box{
+      background:#1b1b1b;
+      padding:20px;
+      border-radius:15px;
+      max-width:500px;
+      margin:auto;
+      box-shadow:0 0 15px rgba(0,255,153,0.2);
+    }
 
-.container{
-    padding:20px;
-}
+    input,select{
+      width:90%;
+      padding:12px;
+      margin:10px;
+      border:none;
+      border-radius:10px;
+      background:#2b2b2b;
+      color:white;
+    }
 
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-    gap:20px;
-}
+    button{
+      background:#00ff99;
+      color:black;
+      border:none;
+      padding:12px 25px;
+      border-radius:10px;
+      font-weight:bold;
+      cursor:pointer;
+    }
 
-.card{
-    background:#1b1b1b;
-    padding:20px;
-    border-radius:20px;
-    transition:0.3s;
-    border:1px solid #2c2c2c;
-}
+    button:hover{
+      opacity:0.8;
+    }
 
-.card:hover{
-    transform:translateY(-5px);
-}
-
-.service{
-    font-size:18px;
-    margin-bottom:10px;
-    color:#00ff99;
-}
-
-.price{
-    margin-bottom:10px;
-}
-
-button{
-    background:#00ff99;
-    border:none;
-    padding:12px 20px;
-    border-radius:10px;
-    font-weight:bold;
-    cursor:pointer;
-    width:100%;
-}
-
-.loading{
-    text-align:center;
-    margin-top:50px;
-    font-size:20px;
-}
-
-</style>
+    #result{
+      margin-top:20px;
+      color:#00ff99;
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-    My SMM Panel
-</header>
+  <div class="box">
+    <h1>🚀 My SMM Panel</h1>
 
-<div class="container">
+    <select id="service">
+      <option>Instagram Followers</option>
+      <option>Facebook Followers</option>
+      <option>TikTok Likes</option>
+      <option>YouTube Views</option>
+    </select>
 
-<div class="loading" id="loading">
-Loading Services...
-</div>
+    <input type="text" id="link" placeholder="Enter Link">
 
-<div class="grid" id="services"></div>
+    <input type="number" id="quantity" placeholder="Quantity">
 
-</div>
+    <button onclick="orderNow()">Order Now</button>
 
-<script>
+    <div id="result"></div>
+  </div>
 
-async function loadServices(){
+  <script>
+    async function orderNow(){
 
-    const response = await fetch('/api/services');
+      let service = document.getElementById("service").value;
+      let link = document.getElementById("link").value;
+      let quantity = document.getElementById("quantity").value;
 
-    const data = await response.json();
+      document.getElementById("result").innerHTML =
+      "⏳ Processing Order...";
 
-    document.getElementById('loading').style.display = 'none';
+      try{
 
-    const servicesDiv = document.getElementById('services');
+        let response = await fetch("/api/order",{
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body:JSON.stringify({
+            service,
+            link,
+            quantity
+          })
+        });
 
-    data.slice(0,50).forEach(service=>{
+        let data = await response.json();
 
-        const price = (parseFloat(service.rate) * 2).toFixed(3);
+        document.getElementById("result").innerHTML =
+        "✅ Order Successful";
 
-        servicesDiv.innerHTML += `
-        
-        <div class="card">
+      }catch(err){
 
-            <div class="service">
-                ${service.name}
-            </div>
+        document.getElementById("result").innerHTML =
+        "❌ Failed";
 
-            <div class="price">
-                Price: $${price}
-            </div>
-
-            <div class="price">
-                Min: ${service.min}
-            </div>
-
-            <button>
-                Order Now
-            </button>
-
-        </div>
-
-        `;
-
-    });
-
-}
-
-loadServices();
-
-</script>
+      }
+    }
+  </script>
 
 </body>
 </html>
