@@ -54,15 +54,71 @@
 
   <h1>Login</h1>
 
-  <input type="email" placeholder="Email">
+  <input type="email" id="email" placeholder="Email">
 
-  <input type="password" placeholder="Password">
+  <input type="password" id="password" placeholder="Password">
 
-  <button>
-    Login
+  <button onclick="login()">
+  Login
   </button>
 
 </div>
+<script type="module">
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getAuth,
+signInWithEmailAndPassword
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyAY_M4F_GDz4N2cLmhMx_mckGdOrwDuDoM",
+
+  authDomain: "boost-up-bd.firebaseapp.com",
+
+  projectId: "boost-up-bd",
+
+  storageBucket: "boost-up-bd.firebasestorage.app",
+
+  messagingSenderId: "1035924954392",
+
+  appId: "1:1035924954392:web:b89fbe353b43e3b2d7d26d"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+window.login = async function(){
+
+  const email =
+  document.getElementById("email").value;
+
+  const password =
+  document.getElementById("password").value;
+
+  try{
+
+    await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    alert("Login Successful 🔥");
+
+  }catch(error){
+
+    alert(error.message);
+
+  }
+
+}
+
+</script>
 </body>
 </html>
